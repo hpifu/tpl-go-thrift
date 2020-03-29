@@ -80,7 +80,7 @@ dockertest: buildenv
 dockerbehave: buildenv
 	docker exec go-build-env bash -c "cd /data/src/${gituser}/${repository} && make behave"
 
-output: cmd/*/*.go internal/*/*.go scripts/version.sh Makefile api/echo.pb.go api/echo_pb2.py vendor
+output: cmd/*/*.go internal/*/*.go scripts/version.sh Makefile api/echoservice vendor
 	@echo "compile"
 	go build -ldflags "-X 'main.AppVersion=`sh scripts/version.sh`'" cmd/${binary}/main.go && \
 	mkdir -p output/${repository}/bin && mv main output/${repository}/bin/${binary} && \
@@ -104,6 +104,9 @@ tidy: go.mod
 
 %_pb2.py: %.proto
 	cd api && python3 -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. echo.proto
+
+%service: %.thrift
+	thrift -r --gen go -out api $< && rm -rf $@/*_service-remote
 
 .PHONY: test
 test: api vendor
