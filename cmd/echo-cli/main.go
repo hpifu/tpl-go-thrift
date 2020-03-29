@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"time"
 
-	"git.apache.org/thrift.git/lib/go/thrift"
+	"github.com/apache/thrift/lib/go/thrift"
 	"github.com/hpifu/tpl-go-thrift/api/echoservice"
 )
 
 func main() {
 	var transport thrift.TTransport
 	var err error
-	transport, err = thrift.NewTSocket("localhost:3001")
+	transport, err = thrift.NewTSocket("localhost:17060")
 	if err != nil {
 		panic(err)
 	}

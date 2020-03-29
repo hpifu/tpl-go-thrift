@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"git.apache.org/thrift.git/lib/go/thrift"
+	"github.com/apache/thrift/lib/go/thrift"
 	"github.com/hpifu/go-kit/hconf"
 	"github.com/hpifu/go-kit/hdef"
 	"github.com/hpifu/go-kit/henv"
@@ -123,8 +123,11 @@ func main() {
 	signal.Notify(quit, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	infoLog.Infof("%v shutdown ...", os.Args[0])
-	server.GracefulStop()
-	infoLog.Infof("%v shutdown success", os.Args[0])
+	if err := server.Stop(); err != nil {
+		warnLog.Warn("%v shutdown failed. err: [%v]", err)
+	} else {
+		infoLog.Infof("%v shutdown success", os.Args[0])
+	}
 
 	// close loggers
 	for _, log := range logs {
